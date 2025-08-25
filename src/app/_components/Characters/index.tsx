@@ -72,7 +72,7 @@ const Characters: React.FC = () => {
     }
 
     try {
-      // ✅ CHAMADA CORRETA PARA API ROUTE
+     
       const response = await fetch(
         `/api/characters?limit=${limit}&offset=${newOffset}${search ? `&search=${search}` : ''}`
       );
