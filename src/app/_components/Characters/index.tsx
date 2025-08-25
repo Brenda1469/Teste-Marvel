@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import api from "../../service/api";
 import { 
   Container, 
   CardList, 
@@ -57,7 +56,6 @@ const Characters: React.FC = () => {
 
   const limit = 20;
 
-
   const generateUniqueKey = (character: ResponseData, index: number) => {
     return `${character.id}-${index}-${character.name}-${offset}`;
   };
@@ -74,16 +72,17 @@ const Characters: React.FC = () => {
     }
 
     try {
-      const response = await api.get('/characters', {
-        params: {
-          limit,
-          offset: newOffset,
-          ...(search && { nameStartsWith: search })
-        }
-      });
+      // ✅ CHAMADA CORRETA PARA API ROUTE
+      const response = await fetch(
+        `/api/characters?limit=${limit}&offset=${newOffset}${search ? `&search=${search}` : ''}`
+      );
 
-      const data = response.data.data;
-      const newCharacters = data.results;
+      if (!response.ok) {
+        throw new Error('Failed to fetch characters');
+      }
+
+      const data = await response.json();
+      const newCharacters = data.data.results;
       
       if (search) {
         setCharacters(newCharacters);
